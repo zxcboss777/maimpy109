@@ -1,15 +1,119 @@
+import pytest
+
 from src.widget import mask_account_card, get_date
 
 
-def test_mask_account_card():
-    print(mask_account_card("Visa Platinum 7000792289606361"))  # Visa Platinum 7000 79 ** 6361
-    print(mask_account_card("Счет 73654108430135874305"))  # Счет **4305
+# Параметризованные тесты для корректных данных
+@pytest.mark.parametrize(
+    "input_data, expected_output",
+    [
+        # Тесты для счетов
+        ("Счет 64686473678894779589", "Счет **9589"),
+        ("Счет 35383033474447895560", "Счет **5560"),
+        ("Счет 73654108430135874305", "Счет **4305"),
+        # Тесты для карт
+        ("Maestro 1596837868705199", "Maestro 1596 83** **** 5199"),
+        ("MasterCard 7158300734726758", "MasterCard 7158 30** **** 6758"),
+        ("Visa Classic 6831982476737658", "Visa Classic 6831 98** **** 7658"),
+        ("Visa Platinum 8990922113665229", "Visa Platinum 8990 92** **** 5229"),
+        ("Visa Gold 5999414228426353", "Visa Gold 5999 41** **** 6353"),
+    ],
+)
+def mask_account_card(input_data, expected_output):
+    """Тестирование функции mask_account_card с корректными входными данными. Проверяем, что функция корректно маск
+    ирует номера карт и счетов."""
+
+    result = mask_account_card(input_data)
+    assert result == expected_output
 
 
-def test_get_date():
-    print(get_date("2024-03-11T02:26:18.671407"))  # 11.03.2024
+# Тесты для некорректных входных данных
+@pytest.mark.parametrize(
+    "input_data, expected_output",
+    [
+        # Некорректные данные
+        ("", ""),  # Пустая строка
+        ("   ", ""),  # Строка с пробелами
+        ("**Счет", "**Счет"),  # Нет номера счета
+        ("Maestro", "Maestro"),  # Нет номера карты
+        ("Счет 123", "Счет **123"),  # Короткий номер счета
+        ("Счет abcdef", "Счет **cdef"),  # Номер счета с буквами
+        ("Unknown 1234567890123456", "Unknown 1234 56** **** 3456"),  # Неизвестный тип
+    ],
+)
+def mask_account_card_invalid_input(input_data, expected_output):
+    """
+    Тестирование функции mask_account_card с некорректными входными данными.
+    Проверяем, что функция корректно обрабатывает некорректные данные.
+    """
+    result = mask_account_card(input_data)
+    assert result == expected_output
 
 
-if name == "main":
-    test_mask_account_card()
-    test_get_date()
+def get_date():
+    # Параметризованные тесты для корректных данных
+    @pytest.mark.parametrize(
+        "input_date, expected_output",
+        [
+            # Стандартные форматы дат
+            ("2023-10-05", "05.10.2023"),  # Стандартная дата
+            ("1999-12-31", "31.12.1999"),  # Конец года
+            ("2000-01-01", "01.01.2000"),  # Начало года
+            # Граничные случаи
+            ("0001-01-01", "01.01.0001"),  # Минимальная дата
+            ("9999-12-31", "31.12.9999"),  # Максимальная дата
+            # Нестандартные, но корректные форматы
+            ("2023-02-28", "28.02.2023"),  # Февраль (не високосный год)
+            ("2024-02-29", "29.02.2024"),  # Февраль (високосный год)
+        ],
+    )
+    def get_date_correct(input_date, expected_output):
+        """
+        Тестирование функции get_date с корректными входными данными.
+        Проверяем, что функция правильно преобразует дату.
+        """
+        result = get_date(input_date)
+        assert result == expected_output
+
+    # Тесты для некорректных входных данных
+    @pytest.mark.parametrize(
+        "input_date",
+        [
+            "",  # Пустая строка
+            "   ",  # Строка с пробелами
+            "2023/10/05",  # Неправильный разделитель
+            "2023-10",  # Неполная дата
+            "2023-10-05T12:00:00",  # Дата с временем
+            "abc",  # Некорректная строка
+            "2023-13-01",  # Неправильный месяц
+            "2023-02-30",  # Неправильный день
+        ],
+    )
+    def get_date_invalid_input(input_date):
+        """
+        Тестирование функции get_date с некорректными входными данными.
+        Проверяем, что функция выбрасывает исключение.
+        """
+        with pytest.raises((IndexError, ValueError)):
+            get_date(input_date)
+
+    # Тесты для граничных случаев
+    def get_date_edge_cases():
+        """
+        Тестирование функции get_date на граничные случаи.
+        """
+        # Пустая строка
+        with pytest.raises(IndexError):
+            get_date("")
+
+        # Строка с пробелами
+        with pytest.raises(IndexError):
+            get_date("   ")
+
+        # Неправильный формат даты
+        with pytest.raises(IndexError):
+            get_date("2023/10/05")
+
+        # Неполная дата
+        with pytest.raises(IndexError):
+            get_date("2023-10")

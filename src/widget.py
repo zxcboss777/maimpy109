@@ -1,41 +1,39 @@
 
-def mask_account_card(account_info: str) -> str:
-    """
-    Маскирует номер карты или счета.
+from src.masks import get_mask_account, get_mask_card_number
 
-    Args:
-        account_info (str): Строка формата 'Visa Platinum 7000792289606361' 
-                            или 'Счет 73654108430135874305'.
 
-    Returns:
-        str: Строка с замаскированным номером.
-    """
-    # Разделяем строку на название и номер
-    match = re.match(r"(.*?)(\d+)$", account_info)
-    if not match:
-        raise ValueError("Неверный формат входных данных")
+def mask_account_card(card_info: str) -> str:
+    """Функция, которая обрабатывает информацию как о картах, так и о счетах"""
+    if not card_info or not card_info.strip():
+        return ""  # Возвращаем пустую строку для пустого ввода или строки с пробелами
 
-    name, number = match.groups()
+    parts = card_info.split()
 
-    # Применяем соответствующую маскировку
-    if name.strip().startswith("Счет"):
-        return f"{name} {mask_account_number(number)}"
+    if not parts:
+        return ""
+
+    if "Счет" in parts:
+        if len(parts) > 1:
+            account_number = parts[-1]
+            masked_number = get_mask_account(account_number)
+            return f"{' '.join(parts[:-1])} {masked_number}"
+        else:
+            return "Счет"  # Если нет номера счета, возвращаем только "Счет"
     else:
-        return f"{name} {mask_card_number(number)}"
+
+        if len(parts) > 1:
+            card_name = " ".join(parts[:-1])
+            card_number = parts[-1]
+            masked_number = get_mask_card_number(card_number)
+            return f"{card_name} {masked_number}"
+        else:
+            return card_info
 
 
-def get_date(date_str: str) -> str:
+def get_date(date: str) -> str:
     """
-    Преобразует дату из ISO-формата в формат 'ДД.ММ.ГГГГ'.
 
-    Args:
-        date_str (str): Строка с датой в формате 'YYYY-MM-DDTHH:MM:SS.mmmmmm'.
-
-    Returns:
-        str: Строка с датой в формате 'ДД.ММ.ГГГГ'.
+    :rtype: object
     """
-    try:
-        date_obj = datetime.fromisoformat(date_str)
-        return date_obj.strftime("%d.%m.%Y")
-    except ValueError:
-        raise ValueError("Неверный формат даты")
+    new_date = date.split("-")
+    return f"{new_date[2][:2]}.{new_date[1]}.{new_date[0]}"
