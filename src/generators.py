@@ -1,41 +1,44 @@
-from typing import Dict, Iterable, Iterator
+# generators.py
+
+from typing import Dict, List, Iterator, Generator
 
 
-def filter_by_currency(transactions: Iterable[Dict], currency: str) -> Iterator[Dict]:
+def filter_by_currency(transactions: List[Dict], currency: str) -> Iterator[Dict]:
     """
-    Фильтрует транзакции по заданной валюте и возвращает итератор.
+    Фильтрует транзакции по заданной валюте.
 
-    :param transactions: Список транзакций (словарей)
-    :param currency: Код валюты для фильтрации (например, "USD")
-    :return: Итератор по транзакциям с указанной валютой
+    :param transactions: Список транзакций.
+    :param currency: Код валюты для фильтрации.
+    :return: Итератор, возвращающий транзакции с указанной валютой.
     """
     for transaction in transactions:
-        if transaction.get("currency") == currency:
+        if transaction["operationAmount"]["currency"]["code"] == currency:
             yield transaction
 
 
-def transaction_descriptions(transactions: Iterable[Dict]) -> Iterator[str]:
+def transaction_descriptions(transactions: List[Dict]) -> Generator[str, None, None]:
     """
-    Генератор, который возвращает описания транзакций.
+    Генерирует описания транзакций.
 
-    :param transactions: Список транзакций (словарей)
-    :return: Итератор по описаниям транзакций
+    :param transactions: Список транзакций.
+    :return: Генератор, возвращающий описания транзакций.
     """
     for transaction in transactions:
         yield transaction["description"]
 
 
-def card_number_generator(start: int, stop: int) -> Iterator[str]:
+def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
     """
-    Генератор номеров банковских карт в формате "XXXX XXXX XXXX XXXX".
+    Генерирует номера банковских карт в заданном диапазоне.
 
-    :param start: Начальное значение диапазона (включительно)
-    :param stop: Конечное значение диапазона (не включая)
-    :return: Итератор по номерам карт
+    :param start: Начальное значение диапазона.
+    :param end: Конечное значение диапазона.
+    :return: Генератор, возвращающий номера карт в формате XXXX XXXX XXXX XXXX.
     """
-    for number in range(start, stop):
-        card_number = f"{number:016d}"
-        yield " ".join([card_number[i : i + 4] for i in range(0, 16, 4)])
+    for number in range(start, end + 1):
+        yield f"{number:016d}"[:4] + " " + f"{number:016d}"[4:8] + " " + f"{number:016d}"[
+                                                                         8:12] + " " + f"{number:016d}"[12:16]
+
 
 
 

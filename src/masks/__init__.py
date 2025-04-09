@@ -18,4 +18,21 @@ file_formatter = logging.Formatter(
 )
 file_handler.setFormatter(file_formatter)
 
+masks_logger.addHandler(file_handler
+file_handler.setFormatter(file_formatter)
+
 masks_logger.addHandler(file_handler)
+
+
+
+def mask_account_number():
+    return None
+
+
+def mask_card_number():
+    return None
+
+
+def get_mask_card_number():
+    return None
+

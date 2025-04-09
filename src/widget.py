@@ -1,39 +1,31 @@
+import re
+from src.masks import mask_card_number, mask_account_number
 
-from src.masks import get_mask_account, get_mask_card_number
 
+def mask_account_card(account_info: str) -> str:
+    """
+    Маскирует номер карты или счета.
 
-def mask_account_card(card_info: str) -> str:
-    """Функция, которая обрабатывает информацию как о картах, так и о счетах"""
-    if not card_info or not card_info.strip():
-        return ""  # Возвращаем пустую строку для пустого ввода или строки с пробелами
+    Args:
+        account_info (str): Строка формата 'Visa Platinum 7000792289606361'
+                            или 'Счет 73654108430135874305'.
 
-    parts = card_info.split()
+    Returns:
+        str: Строка с замаскированным номером.
+    """
+    # Разделяем строку на название и номер
+    match = re.match(r"(.*?)(\d+)$", account_info)
+    if not match:
+        raise ValueError("Неверный формат входных данных")
 
-    if not parts:
-        return ""
+    name, number = match.groups()
 
-    if "Счет" in parts:
-        if len(parts) > 1:
-            account_number = parts[-1]
-            masked_number = get_mask_account(account_number)
-            return f"{' '.join(parts[:-1])} {masked_number}"
-        else:
-            return "Счет"  # Если нет номера счета, возвращаем только "Счет"
+    # Применяем соответствующую маскировку
+    if name.strip().startswith("Счет"):
+        return f"{name} {mask_account_number(number)}"
     else:
-
-        if len(parts) > 1:
-            card_name = " ".join(parts[:-1])
-            card_number = parts[-1]
-            masked_number = get_mask_card_number(card_number)
-            return f"{card_name} {masked_number}"
-        else:
-            return card_info
+        return f"{name} {mask_card_number(number)}"
 
 
-def get_date(date: str) -> str:
-    """
 
-    :rtype: object
-    """
-    new_date = date.split("-")
-    return f"{new_date[2][:2]}.{new_date[1]}.{new_date[0]}"
+
