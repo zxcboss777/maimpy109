@@ -1,0 +1,2 @@
+2025-02-26 09:24:34.530786 - divide error: ZeroDivisionError. Inputs: (1, 0), {}
+2025-03-10 11:26:09.837245 - divid  e error: ZeroDivisionError. Inputs: (1, 0), {}
