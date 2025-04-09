@@ -75,3 +75,24 @@ def add(a: int, b: int) -> int:
     return a + b
 
 add(1, 2)
+@log(filename="mylog.txt")
+def add(a: int, b: int) -> int:
+    return a + b
+add(1, 2)
+```
+## Новая функциональность: Чтение данных из CSV и Excel
+
+add(1, 2)
+Проект теперь поддерживает чтение финансовых операций из следующих форматов:
+- CSV-файлы (`read_transactions_from_csv`)
+- Excel-файлы (`read_transactions_from_excel`)
+
+Пример использования:
+```python
+from src.file_readers import read_transactions_from_csv, read_transactions_from_excel
+
+# Чтение из CSV
+transactions_csv = read_transactions_from_csv("data/transactions.csv")
+
+# Чтение из Excel
+transactions_excel = read_transactions_from_excel("data/transactions_excel.xlsx")

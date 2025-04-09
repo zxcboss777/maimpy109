@@ -1,23 +1,42 @@
-from unittest.mock import patch
-from src.utils.file_reader import read_json_file
-from src.external_api.currency_converter import convert_currency
+from unittest.mock import patch, mock_open
+from src.utils.file_reader import read_transactions_from_csv, read_transactions_from_excel
 
 
-def test_read_json_file():
-    result = read_json_file('data/operations.json')
-    print(f"Result: {result}")
-    assert isinstance(result, list)
-    if result:
-        assert result != []
+# Тест для CSV
+@patch("pandas.read_csv")
+def test_read_transactions_from_csv(mock_read_csv):
+    """
+    Тестирует функцию read_transactions_from_csv с использованием Mock.
+    """
+    # Создаем моковые данные
+    mock_data = [{"id": 1, "amount": 100}, {"id": 2, "amount": 200}]
+
+    # Настройка мока для pandas.read_csv
+    mock_df = mock_read_csv.return_value
+    mock_df.to_dict.return_value = mock_data
+
+    # Вызываем тестируемую функцию
+    result = read_transactions_from_csv("mock_path.csv")
+
+    # Проверяем результат
+    assert result == mock_data
 
 
-@patch('requests.get')
-def test_convert_currency(mock_get):
-    mock_get.return_value.status_code = 200
-    mock_get.return_value.json.return_value = {'result': 75.0}
+# Тест для Excel
+@patch("pandas.read_excel")
+def test_read_transactions_from_excel(mock_read_excel):
+    """
+    Тестирует функцию read_transactions_from_excel с использованием Mock.
+    """
+    # Создаем моковые данные
+    mock_data = [{"id": 1, "amount": 100}, {"id": 2, "amount": 200}]
 
-    transaction = {'amount': 1, 'currency': 'USD'}
-    assert convert_currency(transaction) == 75.0
+    # Настройка мока для pandas.read_excel
+    mock_df = mock_read_excel.return_value
+    mock_df.to_dict.return_value = mock_data
 
-    transaction = {'amount': 1, 'currency': 'RUB'}
-    assert convert_currency(transaction) == 1.0
+    # Вызываем тестируемую функцию
+    result = read_transactions_from_excel("mock_path.xlsx")
+
+    # Проверяем результат
+    assert result == mock_data
