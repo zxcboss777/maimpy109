@@ -18,7 +18,7 @@ file_formatter = logging.Formatter(
 )
 file_handler.setFormatter(file_formatter)
 
-masks_logger.addHandler(file_handler
+masks_logger.addHandler(file_handler)
 file_handler.setFormatter(file_formatter)
 
 masks_logger.addHandler(file_handler)
