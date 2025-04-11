@@ -79,3 +79,4 @@ def get_date(date_str: str) -> str:
     except ValueError:
         raise ValueError(f"Invalid date format: {date_str}")
     return dt.strftime('%d.%m.%Y')
+
