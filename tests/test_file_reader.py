@@ -1,7 +1,6 @@
 from unittest.mock import patch, mock_open
 from src.utils.file_reader import read_transactions_from_csv, read_transactions_from_excel
 
-
 # Тест для CSV
 @patch("pandas.read_csv")
 def test_read_transactions_from_csv(mock_read_csv):
