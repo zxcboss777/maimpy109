@@ -1,8 +1,8 @@
 import re
 from src.masks import get_mask_card_number, get_mask_account
+from datetime import datetime
 
-
-def mask_account_card(account_info: str) -> str:
+    def mask_account_card(account_info: str) -> str:
     """
     Маскирует номер карты или счета.
 
@@ -37,6 +37,8 @@ def mask_account_card(account_info: str) -> str:
         except ValueError:
             raise ValueError(f"Invalid date format: {date_str}")
         return dt.strftime('%d.%m.%Y')
+
+
 
 
 

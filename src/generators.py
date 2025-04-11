@@ -43,7 +43,6 @@ def filter_by_currency(transactions: List[Dict], currency: str) -> Iterator[Dict
         yield tx.get("description", "")
 
 
-def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
 def card_number_generator(start: int, stop: int) -> Iterator[str]:
     """
     Генерирует номера банковских карт в заданном диапазоне.
@@ -65,6 +64,7 @@ def card_number_generator(start: int, stop: int) -> Iterator[str]:
         # Форматируем в виде XXXX XXXX XXXX XXXX
         formatted = f"{card_str[:4]} {card_str[4:8]} {card_str[8:12]} {card_str[12:16]}"
         yield formatted
+
 
 
 

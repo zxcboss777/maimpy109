@@ -2,7 +2,7 @@ import unittest
 import pandas as pd
 from unittest.mock import patch  # Добавлен им
 
-# порт patch
+#порт patch
 from src.finance_operations import read_csv_transactions, read_excel_transactions
 
 
@@ -33,3 +33,4 @@ class TestFinanceOperations(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
