@@ -1,5 +1,5 @@
 from unittest.mock import patch, mock_open
-from src.utils.file_reader import read_transactions_from_csv, read_transactions_from_excel
+from src.finance_operations import read_csv_transactions, read_excel_transactions
 
 # Тест для CSV
 @patch("pandas.read_csv")
@@ -15,7 +15,7 @@ def test_read_transactions_from_csv(mock_read_csv):
     mock_df.to_dict.return_value = mock_data
 
     # Вызываем тестируемую функцию
-    result = read_transactions_from_csv("mock_path.csv")
+    result = read_csv_transactions("mock_path.csv")
 
     # Проверяем результат
     assert result == mock_data
@@ -35,7 +35,8 @@ def test_read_transactions_from_excel(mock_read_excel):
     mock_df.to_dict.return_value = mock_data
 
     # Вызываем тестируемую функцию
-    result = read_transactions_from_excel("mock_path.xlsx")
+    result = read_excel_transactions("mock_path.xlsx")
 
     # Проверяем результат
     assert result == mock_data
+

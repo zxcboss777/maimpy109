@@ -37,8 +37,7 @@ def mask_card_number(card_number: str) -> str:
     if len(card_number) < 8:
         logger.warning(f"Номер карты короче 8 символов: {card_number}")
         return card_number
-    masked_number = (f"{card_number[:4]} {card_number[4:6]}** ****"
-    f" {card_number[-4:]})
+    masked_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
     logger.info(f"Карта успешно замаскирована: {masked_number}")
     return masked_number
 

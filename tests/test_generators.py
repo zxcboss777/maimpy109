@@ -52,16 +52,6 @@ def test_card_number_generator(start: int, stop: int, expected: list[str]) -> No
         next(generator)
 
 
-def card_number_generator(start: int, end: int) -> Generator[str, None, None]:
-    """
-    Генерирует номера банковских карт в заданном диапазоне.
-    :param start: Начальное значение диапазона.
-    :param end: Конечное значение диапазона.
-    :return: Генератор, возвращающий номера карт в формате XXXX XXXX XXXX XXXX.
-    """
-    for number in range(start, end + 1):
-        yield f"{number:016d}"[:4] + " " + f"{number:016d}"[4:8] + " " + f"{number:016d}"[
-                                                                         8:12] + " " + f"{number:016d}"[12:16]
 
 
 
