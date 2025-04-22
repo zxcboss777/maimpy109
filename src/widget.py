@@ -1,30 +1,28 @@
-import re
-from src.masks import get_mask_card_number, get_mask_account
+import logging
 from datetime import datetime
 
-    def mask_account_card(account_info: str) -> str:
-    """
-    Маскирует номер карты или счета.
+from src.masks import mask_account_number, mask_card_number
 
-    Args:
-        account_info (str): Строка формата 'Visa Platinum 7000792289606361'
-                            или 'Счет 73654108430135874305'.
 
-    Returns:
-        str: Строка с замаскированным номером.
-    """
-    # Разделяем строку на название и номер
-    match = re.match(r"(.*?)(\d+)$", account_info)
-    if not match:
-        raise ValueError("Неверный формат входных данных")
+def mask_account_card(input_data: str) -> str:
+    """Определяет тип данных (счёт/карта) и маскирует соответствующим образом."""
+    card_list = input_data.split()
+    number = card_list.pop()
+    name = " ".join(card_list)
+    if name == "Счет":
+        return f"Счет {mask_account_number(number)}"
+    else:
+        return f"{name} {mask_card_number(number)}"
 
-    name, number = match.groups()
 
-    # Применяем соответствующую маскировку
-if name.strip().startswith("Счет"):
-    return f"{name} {get_mask_account(number)}"
-else:
-    return f"{name} {get_mask_card_number(number)}"
+def get_date(date_str: str) -> str:
+    """Парсит дату из формата ISO в DD.MM.YYYY."""
+    try:
+        dt = datetime.strptime(date_str.strip(), '%Y-%m-%dT%H:%M:%S')
+        formatted_date = dt.strftime('%d.%m.%Y')
+        return formatted_date
+    except ValueError as e:
+        raise ValueError(f"Invalid date format: {date_str}")
 
     
 

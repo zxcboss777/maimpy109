@@ -1,91 +1,94 @@
-from datetime import datetime
+import pytest
+
+from src.widget import mask_account_card, get_date
 
 
-def mask_account_number(account_number: str) -> str:
-    """
-    Маскирует номер счёта.
-    По условию тестов нужно выводить '**' + последние 4 символа,
-    а если длина номера меньше 4, то '**' + сам номер.
-    """
-    account_number = account_number.strip()
-    if not account_number:
-        return ""
-    if len(account_number) < 4:
-        return "**" + account_number
-    return "**" + account_number[-4:]
-
-
-def mask_card_number(card_number: str) -> str:
-    """
-    Маскирует номер карты.
-    Из примеров видно, что шаблон для маски выглядит так:
-      - первые 4 цифры,
-      - пробел,
-      - следующие 2 цифры,
-      - '**',
-      - пробел,
-      - '****',
-      - пробел,
-      - последние 4 цифры.
-    Пример: 1234567890123456 -> 1234 56 ** 3456
-    """
-    card_number = card_number.strip()
-    if not card_number:
-        return ""
-
-    # Для упрощения считаем, что карта >= 8 символов (как в тестах).
-    # Если меньше, вернём как есть — или можно придумать собственное правило маскировки.
-    if len(card_number) < 8:
-        return card_number
-
-    return f"{card_number[:4]} {card_number[4:6]} ** {card_number[-4:]}"
-
-
-def mask_account_card(input_data: str) -> str:
-    """
-    Определяет, с чем мы имеем дело — счёт или карту — и маскирует соответствующим образом.
-    Если строка пуста или содержит только пробелы, возвращаем пустую строку.
-    Если из строки невозможно вытащить номер, возвращаем без изменений.
-    """
-    input_data = input_data.strip()
-    if not input_data:
-        return ""
-
-    # Проверяем, начинается ли строка со слова "Счет "
-    if input_data.startswith("Счет "):
-        # Все, что после "Счет " - номер счёта
-        account_number = input_data[len("Счет "):].strip()
-        return "Счет " + mask_account_number(account_number)
-    else:
-        # Предполагаем, что это карта (либо что-то, что по тестам маскируется как карта)
-        # Разделим строку, чтобы отделить тип карты (или другое слово) от номера.
-        # Обычно номер карты идёт последним "словом".
-        parts = input_data.rsplit(" ", 1)
-        if len(parts) < 2:
-            # Нет явно выделенного номера в конце — возвращаем как есть.
-            return input_data
-        card_type, number = parts
-        return card_type + " " + mask_card_number(number)
-
-
-    def get_date(date_str: str) -> str:
-    """
-    Парсит строку даты формата YYYY-MM-DDTHH:MM:SS
-    и возвращает её в формате DD.MM.YYYY.
-    При несоответствии формату генерирует ValueError.
-    """
-    try:
-        dt = datetime.strptime(date_str.strip(), '%Y-%m-%dT%H:%M:%S')
-    except ValueError:
-        raise ValueError(f"Invalid date format: {date_str}")
-    return dt.strftime('%d.%m.%Y')
-
-    def test_mask_account_card(input_data, expected_output):
-    """Тестирование функции mask_account_card с корректными входными данными. Проверяем, что функция корректно маскирует номера карт и счетов."""
-    """Тестирование функции mask_account_card
-    с корректными входными данными. Проверяем,
-    что функция корректно маскирует номера карт и счетов."""
+# Параметризованные тесты для корректных данных
+@pytest.mark.parametrize(
+    "input_data, expected_output",
+    [
+        # Тесты для счетов
+        ("Счет 64686473678894779589", "Счет **9589"),
+        ("Счет 35383033474447895560", "Счет **5560"),
+        ("Счет 73654108430135874305", "Счет **4305"),
+        # Тесты для карт
+        ("Maestro 1596837868705199", "Maestro 1596 83** **** 5199"),
+        ("MasterCard 7158300734726758", "MasterCard 7158 30** **** 6758"),
+        ("Visa Classic 6831982476737658", "Visa Classic 6831 98** **** 7658"),
+        ("Visa Platinum 8990922113665229", "Visa Platinum 8990 92** **** 5229"),
+        ("Visa Gold 5999414228426353", "Visa Gold 5999 41** **** 6353"),
+    ],
+)
+def test_mask_account_card(input_data, expected_output):
+    """Тестирование функции mask_account_card с корректными входными данными. Проверяем, что функция корректно маск
+    ирует номера карт и счетов."""
 
     result = mask_account_card(input_data)
     assert result == expected_output
+
+
+# Тесты для некорректных входных данных
+@pytest.mark.parametrize(
+    "input_data, expected_output",
+    [
+        # Некорректные данные
+        ("Счет 123", "Счет **123"),  # Короткий номер счета
+        ("Счет abcdef", "Счет **cdef"),  # Номер счета с буквами
+        ("Unknown 1234567890123456", "Unknown 1234 56** **** 3456"),  # Неизвестный тип
+    ],
+)
+def test_mask_account_card_invalid_input(input_data, expected_output):
+    """
+    Тестирование функции mask_account_card с некорректными входными данными.
+    Проверяем, что функция корректно обрабатывает некорректные данные.
+    """
+    result = mask_account_card(input_data)
+    assert result == expected_output
+
+
+@pytest.mark.parametrize(
+    "input_date, expected_output",
+    [
+        # Стандартные форматы дат
+        ("2023-10-05T00:00:00", "05.10.2023"),  # Стандартная дата
+        ("1999-12-31T00:00:00", "31.12.1999"),  # Конец года
+        ("2000-01-01T00:00:00", "01.01.2000"),  # Начало года
+        # Граничные случаи
+        ("0001-01-01T00:00:00", "01.01.0001"),  # Минимальная дата
+        ("9999-12-31T00:00:00", "31.12.9999"),  # Максимальная дата
+        # Нестандартные, но корректные форматы
+        ("2023-02-28T00:00:00", "28.02.2023"),  # Февраль (не високосный год)
+        ("2024-02-29T00:00:00", "29.02.2024"),  # Февраль (високосный год)
+    ],
+)
+def test_get_date_correct(input_date, expected_output):
+    """
+    Тестирование функции get_date с корректными входными данными.
+    Проверяем, что функция правильно преобразует дату.
+    """
+    result = get_date(input_date)
+    assert result == expected_output
+
+
+# Тесты для некорректных входных данных
+@pytest.mark.parametrize(
+    "input_date",
+    [
+        "",  # Пустая строка
+        "   ",  # Строка с пробелами
+        "2023/10/05",  # Неправильный разделитель
+        "2023-10",  # Неполная дата
+        "abc",  # Некорректная строка
+        "2023-13-01",  # Неправильный месяц
+        "2023-02-30",  # Неправильный день
+    ],
+)
+def test_get_date_invalid_input(input_date):
+    """
+    Тестирование функции get_date с некорректными входными данными.
+    Проверяем, что функция выбрасывает исключение.
+    """
+    with pytest.raises((IndexError, ValueError)):
+        get_date(input_date)
+
 
