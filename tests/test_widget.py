@@ -68,7 +68,7 @@ def mask_account_card(input_data: str) -> str:
         return card_type + " " + mask_card_number(number)
 
 
-def get_date(date_str: str) -> str:
+    def get_date(date_str: str) -> str:
     """
     Парсит строку даты формата YYYY-MM-DDTHH:MM:SS
     и возвращает её в формате DD.MM.YYYY.
@@ -79,4 +79,13 @@ def get_date(date_str: str) -> str:
     except ValueError:
         raise ValueError(f"Invalid date format: {date_str}")
     return dt.strftime('%d.%m.%Y')
+
+    def test_mask_account_card(input_data, expected_output):
+    """Тестирование функции mask_account_card с корректными входными данными. Проверяем, что функция корректно маскирует номера карт и счетов."""
+    """Тестирование функции mask_account_card
+    с корректными входными данными. Проверяем,
+    что функция корректно маскирует номера карт и счетов."""
+
+    result = mask_account_card(input_data)
+    assert result == expected_output
 

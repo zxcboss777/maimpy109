@@ -1,8 +1,8 @@
 import re
-from src.masks import mask_card_number, mask_account_number
+from src.masks import get_mask_card_number, get_mask_account
+from datetime import datetime
 
-
-def mask_account_card(account_info: str) -> str:
+    def mask_account_card(account_info: str) -> str:
     """
     Маскирует номер карты или счета.
 
@@ -21,10 +21,11 @@ def mask_account_card(account_info: str) -> str:
     name, number = match.groups()
 
     # Применяем соответствующую маскировку
-    if name.strip().startswith("Счет"):
-        return f"{name} {mask_account_number(number)}"
-    else:
-        return f"{name} {mask_card_number(number)}"
+if name.strip().startswith("Счет"):
+    return f"{name} {get_mask_account(number)}"
+else:
+    return f"{name} {get_mask_card_number(number)}"
+
     
 
 
