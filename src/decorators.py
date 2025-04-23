@@ -13,6 +13,7 @@ def log(filename: Optional[str] = None) -> Callable:
     :param filename: Имя файла для записи логов. Если None, логи выводятся в консоль.
     :return: Декорированная функция
     """
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -22,15 +23,9 @@ def log(filename: Optional[str] = None) -> Callable:
 
             try:
                 result = func(*args, **kwargs)
-                log_message = (
-                    f"{timestamp} - {func_name} - Args: {args}, Kwargs: {kwargs} - "
-                    f"Result: {result}\n"
-                )
+                log_message = f"{timestamp} - {func_name} - Args: {args}, Kwargs: {kwargs} - " f"Result: {result}\n"
             except Exception as e:
-                log_message = (
-                    f"{timestamp} - {func_name} - Args: {args}, Kwargs: {kwargs} - "
-                    f"Error: {str(e)}\n"
-                )
+                log_message = f"{timestamp} - {func_name} - Args: {args}, Kwargs: {kwargs} - " f"Error: {str(e)}\n"
                 if filename:
                     with open(filename, "a", encoding="utf-8") as file:
                         file.write(log_message)

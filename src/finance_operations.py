@@ -1,4 +1,4 @@
-from typing import Dict,List
+from typing import Dict, List
 
 import pandas as pd
 
@@ -10,7 +10,7 @@ def read_csv_transactions(file_path: str) -> List[Dict]:
     :return: Список словарей с транзакциями
     """
     df = pd.read_csv(file_path, delimiter=";")
-    return df.to_dict('records')
+    return df.to_dict("records")
 
 
 def read_excel_transactions(file_path: str) -> List[Dict]:
@@ -20,8 +20,4 @@ def read_excel_transactions(file_path: str) -> List[Dict]:
     :return: Список словарей с транзакциями
     """
     df = pd.read_excel(file_path)
-    return df.to_dict('records')
-
-
-
-
+    return df.to_dict("records")

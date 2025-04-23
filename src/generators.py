@@ -1,6 +1,6 @@
 # generators.py
 
-from typing import Dict, Iterator, List, Generator
+from typing import Dict, Generator, Iterator, List
 
 
 def filter_by_currency(transactions: List[Dict], currency: str) -> Iterator[Dict]:
@@ -47,4 +47,3 @@ def card_number_generator(start: int, stop: int) -> Generator[str, None, None]:
     for num in range(start, stop):
         card_num = f"{num:016d}"
         yield " ".join([card_num[i : i + 4] for i in range(0, 16, 4)])
-

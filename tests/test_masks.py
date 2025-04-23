@@ -1,4 +1,4 @@
-from src.masks import mask_card_number, mask_account_number
+from src.masks import mask_account_number, mask_card_number
 
 
 def test_mask_card_number():
@@ -9,4 +9,3 @@ def test_mask_card_number():
 def test_mask_account_number():
     assert mask_account_number("1234123412341234") == "**1234"
     assert mask_account_number("0000000000000000") == "**0000"
-

@@ -1,5 +1,5 @@
-from src.utils.operation_search import operation_search
 from src.utils.operation_counter import operation_counter
+from src.utils.operation_search import operation_search
 
 
 def test_search_operations_by_description():

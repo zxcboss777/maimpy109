@@ -4,7 +4,7 @@ from datetime import datetime
 # Настройка логгера
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # Добавляем обработчик для вывода в консоль (можно также настроить запись в файл)
 console_handler = logging.StreamHandler()
@@ -40,12 +40,3 @@ def mask_card_number(card_number: str) -> str:
     masked_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
     logger.info(f"Карта успешно замаскирована: {masked_number}")
     return masked_number
-
-
-
-
-
-
-
-
-

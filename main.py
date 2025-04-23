@@ -1,13 +1,13 @@
-from src.file_reader import read_json_file, read_csv_file, read_excel_file
+from typing import Dict, List
+
+from src.file_reader import read_csv_file, read_excel_file, read_json_file
 from src.transaction_processing import (
-    filter_by_description,
     count_by_categories,
+    filter_by_currency,
+    filter_by_description,
     filter_by_status,
     sort_transactions,
-    filter_by_currency
 )
-from typing import List, Dict
-
 
 
 def print_transactions(transactions: List[Dict], limit: int = 5):
@@ -30,17 +30,13 @@ def main():
 
     # Настройки путей по умолчанию
     DEFAULT_PATHS = {
-        'JSON': 'transactions.json',
-        'CSV': 'C:\\Users\\pavelk\\Downloads\\transactions.csv',
-        'XLSX': 'C:\\Users\\pavelk\\Downloads\\transactions_excel.xlsx'
+        "JSON": "transactions.json",
+        "CSV": "C:\\Users\\pavelk\\Downloads\\transactions.csv",
+        "XLSX": "C:\\Users\\pavelk\\Downloads\\transactions_excel.xlsx",
     }
 
     # Выбор источника данных
-    file_readers = {
-        '1': ('JSON', read_json_file),
-        '2': ('CSV', read_csv_file),
-        '3': ('XLSX', read_excel_file)
-    }
+    file_readers = {"1": ("JSON", read_json_file), "2": ("CSV", read_csv_file), "3": ("XLSX", read_excel_file)}
 
     while True:
         print("\nВыберите источник данных:")
@@ -59,7 +55,7 @@ def main():
             print(f"Не удалось загрузить транзакции. Попробуйте еще раз.")
 
     # Фильтрация по статусу
-    valid_statuses = ['EXECUTED', 'CANCELED', 'PENDING']
+    valid_statuses = ["EXECUTED", "CANCELED", "PENDING"]
     while True:
         print("\nДоступные статусы:", ", ".join(valid_statuses))
         status = input("Введите статус для фильтрации (или Enter чтобы пропустить): ").upper().strip()
@@ -73,14 +69,14 @@ def main():
         print(f"Статус '{status}' недоступен.")
 
     # Дополнительные фильтры
-    if input("\nОтсортировать по дате? (да/нет): ").lower() == 'да':
+    if input("\nОтсортировать по дате? (да/нет): ").lower() == "да":
         order = input("По возрастанию или по убыванию? (возрастание/убывание): ").lower()
-        transactions = sort_transactions(transactions, order.startswith('у'))
+        transactions = sort_transactions(transactions, order.startswith("у"))
 
-    if input("\nВыводить только рублевые транзакции? (да/нет): ").lower() == 'да':
-        transactions = filter_by_currency(transactions, 'RUB')
+    if input("\nВыводить только рублевые транзакции? (да/нет): ").lower() == "да":
+        transactions = filter_by_currency(transactions, "RUB")
 
-    if input("\nФильтровать по описанию? (да/нет): ").lower() == 'да':
+    if input("\nФильтровать по описанию? (да/нет): ").lower() == "да":
         keyword = input("Введите ключевое слово: ").strip()
         transactions = filter_by_description(transactions, keyword)
 
@@ -91,8 +87,8 @@ def main():
         print_transactions(transactions)
 
         # Анализ по категориям
-        if input("\nПроанализировать по категориям? (да/нет): ").lower() == 'да':
-            categories = input("Введите категории через запятую: ").strip().split(',')
+        if input("\nПроанализировать по категориям? (да/нет): ").lower() == "да":
+            categories = input("Введите категории через запятую: ").strip().split(",")
             if categories:
                 counts = count_by_categories(transactions, [c.strip() for c in categories])
                 print("\nКоличество транзакций по категориям:")

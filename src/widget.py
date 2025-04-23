@@ -18,18 +18,8 @@ def mask_account_card(input_data: str) -> str:
 def get_date(date_str: str) -> str:
     """Парсит дату из формата ISO в DD.MM.YYYY."""
     try:
-        dt = datetime.strptime(date_str.strip(), '%Y-%m-%dT%H:%M:%S')
-        formatted_date = dt.strftime('%d.%m.%Y')
+        dt = datetime.strptime(date_str.strip(), "%Y-%m-%dT%H:%M:%S")
+        formatted_date = dt.strftime("%d.%m.%Y")
         return formatted_date
     except ValueError as e:
         raise ValueError(f"Invalid date format: {date_str}")
-
-    
-
-
-
-
-
-
-
-

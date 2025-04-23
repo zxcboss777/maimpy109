@@ -1,5 +1,6 @@
 import pytest
-from src.generators import filter_by_currency, transaction_descriptions, card_number_generator
+
+from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
 
 @pytest.fixture
@@ -50,11 +51,3 @@ def test_card_number_generator(start: int, stop: int, expected: list[str]) -> No
         assert next(generator) == exp
     with pytest.raises(StopIteration):
         next(generator)
-
-
-
-
-
-
-
-

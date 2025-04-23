@@ -1,5 +1,7 @@
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
+
 from src.finance_operations import read_csv_transactions, read_excel_transactions
+
 
 # Тест для CSV
 @patch("pandas.read_csv")
@@ -39,4 +41,3 @@ def test_read_transactions_from_excel(mock_read_excel):
 
     # Проверяем результат
     assert result == mock_data
-

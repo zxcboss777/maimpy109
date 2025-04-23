@@ -1,6 +1,6 @@
 import pytest
 
-from src.widget import mask_account_card, get_date
+from src.widget import get_date, mask_account_card
 
 
 # Параметризованные тесты для корректных данных
@@ -90,5 +90,3 @@ def test_get_date_invalid_input(input_date):
     """
     with pytest.raises((IndexError, ValueError)):
         get_date(input_date)
-
-
