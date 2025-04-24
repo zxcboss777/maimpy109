@@ -7,9 +7,9 @@ logger.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # Добавляем обработчик для вывода в консоль (можно также настроить запись в файл)
-console_handler = logging.FileHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
+file_handler = logging.FileHandler("logs/masks.log", encoding="utf-8")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 def mask_account_number(account_number: str) -> str:
