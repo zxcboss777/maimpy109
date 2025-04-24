@@ -6,7 +6,7 @@ utils_logger.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 # Добавляем обработчик для вывода в консоль (можно также настроить запись в файл)
-console_handler = logging.StreamHandler()
+console_handler = logging.FileHandler()
 console_handler.setFormatter(formatter)
 utils_logger.addHandler(console_handler)
 
