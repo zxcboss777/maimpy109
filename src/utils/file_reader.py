@@ -1,26 +1,60 @@
+# src/utils/file_reader.py
+from typing import List, Dict, Any
 import json
-import logging
+import pandas as pd
+from typing import List, Dict
 
-utils_logger = logging.getLogger(__name__)
-utils_logger.setLevel(logging.INFO)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
-# Добавляем обработчик для вывода в консоль (можно также настроить запись в файл)
-file_handler = logging.FileHandler("logs/utils.log", encoding="utf-8")
-file_handler.setFormatter(formatter)
-utils_logger.addHandler(file_handler)
-
-def read_json_file(file_path: str) -> list:
-    utils_logger.debug(f"Попытка чтения файла: {file_path}")
+def read_transactions_from_csv(path: str) -> List[Dict[str, Any]]:
+def read_transactions_from_csv(file_path: str) -> List[Dict]:
+    """
+    Прочитать CSV-файл с транзакциями и вернуть список словарей.
+    При любой ошибке чтения выбрасывает ValueError с понятным сообщением.
+    Считывает финансовые операции из CSV-файла.
+    Args:
+        file_path (str): Путь к CSV-файлу.
+    Returns:
+        List[Dict]: Список словарей с транзакциями.
+    """
     try:
-        with open(file_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-            if isinstance(data, list):
-                utils_logger.info(f"Файл {file_path} успешно прочитан")
-                return data
-            else:
-                utils_logger.warning(f"Файл {file_path} не содержит список")
-                return []
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        utils_logger.error(f"Ошибка при чтении файла {file_path}: {e}")
-        return []
+        df = pd.read_csv(path)                     # <-- патчируется tests/test_file_reader.py
+        df = pd.read_csv(file_path)
+        return df.to_dict(orient="records")
+    except Exception as exc:
+        raise ValueError(f"Ошибка при чтении CSV-файла: {exc}")
+    except Exception as e:
+        raise ValueError(f"Ошибка при чтении CSV-файла: {e}")
+
+
+def read_transactions_from_excel(path: str) -> List[Dict[str, Any]]:
+def read_transactions_from_excel(file_path: str) -> List[Dict]:
+    """
+    Прочитать Excel-файл с транзакциями и вернуть список словарей.
+    При любой ошибке чтения выбрасывает ValueError с понятным сообщением.
+    Считывает финансовые операции из Excel-файла.
+    Args:
+        file_path (str): Путь к Excel-файлу.
+    Returns:
+        List[Dict]: Список словарей с транзакциями.
+    """
+    try:
+        df = pd.read_excel(path)                   # <-- патчируется tests/test_file_reader.py
+        df = pd.read_excel(file_path)  # Changed from read_csv to read_excel
+        return df.to_dict(orient="records")
+    except Exception as exc:
+        raise ValueError(f"Ошибка при чтении Excel-файла: {exc}")
+    except Exception as e:
+        raise ValueError(f"Ошибка при чтении Excel-файла: {e}")
+
+
+def read_transactions_from_json(file_path: str) -> List[Dict]:
+    """
+    Считывает финансовые операции из JSON-файла.
+    Args:
+        file_path (str): Путь к JSON-файлу.
+    Returns:
+        List[Dict]: Список словарей с транзакциями.
+    """
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
