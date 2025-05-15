@@ -1,22 +1,19 @@
-import pandas as pd
 import json
-from typing import List, Dict
+from typing import Dict, List
+
+import pandas as pd
 
 
 def read_json_file(file_path: str) -> List[Dict]:
     """Читает транзакции из JSON файла"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
-            if isinstance(data, list):
-                return data
-            else:
-                return []
-    except (FileNotFoundError, json.JSONDecodeError):
             return data if isinstance(data, list) else []
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Ошибка при чтении JSON: {e}")
         return []
+
 
 def read_csv_file(file_path: str) -> List[Dict]:
     """Читает транзакции из CSV файла"""
@@ -26,6 +23,7 @@ def read_csv_file(file_path: str) -> List[Dict]:
     except Exception as e:
         print(f"Ошибка при чтении CSV: {e}")
         return []
+
 
 def read_excel_file(file_path: str) -> List[Dict]:
     """Читает транзакции из Excel файла"""

@@ -1,42 +1,70 @@
 import logging
-from datetime import datetime
+import os
+from pathlib import Path
 
-# Настройка логгера
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+# Настройка логгера для модуля masks
+logger = logging.getLogger('masks')
 
-# Добавляем обработчик для вывода в консоль (можно также настроить запись в файл)
-file_handler = logging.FileHandler("logs/masks.log", encoding="utf-8")
+# Определяем путь к папке logs в корне проекта
+project_root = Path(__file__).parent.parent  # Поднимаемся на уровень выше src
+log_dir = project_root / "logs"
+log_dir.mkdir(exist_ok=True)  # Создаем папку, если её нет
+
+# Настройка обработчика файла
+file_handler = logging.FileHandler(
+    filename=log_dir / "masks.log",
+    mode='w',
+    encoding='utf-8'
+)
+
+# Форматтер для логов
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
 
 
-def mask_account_number(account_number: str) -> str:
-    """Маскирует номер счёта."""
-    logger.info(f"Начало работы функции mask_account_number для номера: {account_number}")
-    account_number = account_number.strip()
-    if not account_number:
-        logger.warning("Получена пустая строка для маскировки счёта")
-        return ""
-    if len(account_number) < 4:
-        logger.debug(f"Номер счёта короче 4 символов: {account_number}")
-        return "**" + account_number
-    masked_number = "**" + account_number[-4:]
-    logger.info(f"Счёт успешно замаскирован: {masked_number}")
-    return masked_number
+def get_mask_card_number(card_number: str) -> str:
+    """Функция, которая принимает на вход номер карты и возвращает её маску"""
+    new_mask_card = card_number[:4] + " " + card_number[6:8] + "** ****" + " " + card_number[-4:]
+    return new_mask_card
+    try:
+        logger.debug(f"Начало маскировки номера карты: {card_number}")
+
+        if len(card_number) != 16:
+            error_msg = f"Некорректная длина номера карты: {len(card_number)} (должно быть 16)"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+def get_mask_account(card_number: str) -> str:
+        masked_card = card_number[:4] + " " + card_number[4:6] + "** ****" + " " + card_number[-4:]
+        logger.info(f"Карта успешно замаскирована: {masked_card}")
+        return masked_card
+
+    except Exception as e:
+        logger.error(f"Ошибка при маскировке карты: {str(e)}", exc_info=True)
+        raise
 
 
-def mask_card_number(card_number: str) -> str:
-    """Маскирует номер карты."""
-    logger.info(f"Начало работы функции mask_card_number для номера: {card_number}")
-    card_number = card_number.strip()
-    if not card_number:
-        logger.warning("Получена пустая строка для маскировки карты")
-        return ""
-    if len(card_number) < 8:
-        logger.warning(f"Номер карты короче 8 символов: {card_number}")
-        return card_number
-    masked_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
-    logger.info(f"Карта успешно замаскирована: {masked_number}")
-    return masked_number
+def get_mask_account(account_number: str) -> str:
+    """Функция, которая принимает на вход номер счёта и возвращает его маску"""
+    return "**" + card_number[-4:]
+    try:
+        logger.debug(f"Начало маскировки номера счета: {account_number}")
+
+        if len(account_number) < 4:
+            error_msg = f"Номер счета слишком короткий: {len(account_number)} (минимум 4)"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        masked_account = "**" + account_number[-4:]
+        logger.info(f"Счет успешно замаскирован: {masked_account}")
+        return masked_account
+
+    except Exception as e:
+        logger.error(f"Ошибка при маскировке счета: {str(e)}", exc_info=True)
+        raise

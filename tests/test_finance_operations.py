@@ -1,9 +1,8 @@
 import unittest
-from unittest.mock import patch  # Добавлен им
+from unittest.mock import patch
 
 import pandas as pd
 
-# порт patch
 from src.finance_operations import read_csv_transactions, read_excel_transactions
 
 
@@ -11,10 +10,9 @@ class TestFinanceOperations(unittest.TestCase):
 
     @patch("pandas.read_csv")
     def test_read_csv_transactions(self, mock_read_csv):
-        # Мокируем возвращаемое значение pd.read_csv
         mock_read_csv.return_value = pd.DataFrame([{"date": "2023-01-01", "amount": 100}])
 
-        # Вызываем тестируемую функцию
+        # Вызываем функцию
         result = read_csv_transactions("dummy_path.csv")
 
         # Проверяем, что результат соответствует ожидаемому
