@@ -1,41 +1,39 @@
+from masks import get_mask_account, get_mask_card_number
+from src.masks import get_mask_account, get_mask_card_number
 
-def mask_account_card(account_info: str) -> str:
-    """
-    Маскирует номер карты или счета.
 
-    Args:
-        account_info (str): Строка формата 'Visa Platinum 7000792289606361' 
-                            или 'Счет 73654108430135874305'.
+def mask_account_card(card_info: str) -> str:
+    """Функция, которая обрабатывает информацию как о картах, так и о счетах"""
+    if not card_info or not card_info.strip():
+        return ""  # Возвращаем пустую строку для пустого ввода или строки с пробелами
 
-    Returns:
-        str: Строка с замаскированным номером.
-    """
-    # Разделяем строку на название и номер
-    match = re.match(r"(.*?)(\d+)$", account_info)
-    if not match:
-        raise ValueError("Неверный формат входных данных")
+    parts = card_info.split()
 
-    name, number = match.groups()
+    if not parts:
+        return ""
 
-    # Применяем соответствующую маскировку
-    if name.strip().startswith("Счет"):
-        return f"{name} {mask_account_number(number)}"
+    if "Счет" in parts:
+        account_number = parts[-1]
+        masked_number = get_mask_account(account_number)
+        return f"{' '.join(parts[:-1])} {masked_number}"
+        if len(parts) > 1:
+            account_number = parts[-1]
+            masked_number = get_mask_account(account_number)
+            return f"{' '.join(parts[:-1])} {masked_number}"
+        else:
+            return "Счет"  # Если нет номера счета, возвращаем только "Счет"
     else:
-        return f"{name} {mask_card_number(number)}"
+        card_name = " ".join(parts[:-1])
+        card_number = parts[-1]
+        masked_number = get_mask_card_number(card_number)
+        return f"{card_name} {masked_number}"
+        if len(parts) > 1:
+            card_name = " ".join(parts[:-1])
+            card_number = parts[-1]
+            masked_number = get_mask_card_number(card_number)
+            return f"{card_name} {masked_number}"
+        else:
+            return card_info
 
 
-def get_date(date_str: str) -> str:
-    """
-    Преобразует дату из ISO-формата в формат 'ДД.ММ.ГГГГ'.
-
-    Args:
-        date_str (str): Строка с датой в формате 'YYYY-MM-DDTHH:MM:SS.mmmmmm'.
-
-    Returns:
-        str: Строка с датой в формате 'ДД.ММ.ГГГГ'.
-    """
-    try:
-        date_obj = datetime.fromisoformat(date_str)
-        return date_obj.strftime("%d.%m.%Y")
-    except ValueError:
-        raise ValueError("Неверный формат даты")
+def get_date(date: str) -> str:
